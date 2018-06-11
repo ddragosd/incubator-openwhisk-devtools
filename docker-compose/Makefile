@@ -188,6 +188,7 @@ setup:
 					--link="openwhisk_minio_1:minio.docker" --network=openwhisk_default \
 					--entrypoint=rclone openwhisk/apigateway mkdir minio:api-gateway
 	docker run --rm -v ~/tmp/openwhisk/api-gateway-config/api-gateway/generated-conf.d:/etc/api-gateway/generated-conf.d \
+					-v ~/tmp/openwhisk/api-gateway-config/api-gateway/env.conf:/etc/api-gateway/environment.conf.d \
 					-v ~/tmp/openwhisk/rclone:/root/.config/rclone \
 					--link="openwhisk_minio_1:minio.docker" --network=openwhisk_default \
 					--entrypoint=rclone openwhisk/apigateway copy --exclude .git /etc/api-gateway/ minio:api-gateway/
