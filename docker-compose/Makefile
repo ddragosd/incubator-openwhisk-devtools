@@ -38,7 +38,7 @@ endif
 #   2. then it starts all components using docker-compose
 #   3. it runs a sample hello-world function
 #   To stop and cleanup the environment use: make destroy
-quick-start: download download-cli docker_pull run quick-start-pause hello-world quick-start-info
+quick-start: download download-cli run quick-start-pause hello-world quick-start-info
 
 add-catalog: download-catalog init-catalog
 
@@ -308,7 +308,7 @@ hello-world: create-hello-world-function
 	$(WSK_CLI) -i action update "/guest/hello" --web true
 	web_action=`$(WSK_CLI) -i api create /hello /world get hello --response-type json | tail -n 1` \
 	    && echo "invoking: " $$web_action \
-	    && (echo $$web_action | xargs curl -sS | grep "Hello, World") || ($(WSK_CLI) -i action delete hello && echo "Error invoking the web action" && tail -n 200 ~/tmp/openwhisk/invoker/logs/invoker-local_logs.log ~/tmp/openwhisk/controller/logs/controller-local_logs.log && exit 1)
+	    && (echo $$web_action | xargs curl -sS -k | grep "Hello, World") || ($(WSK_CLI) -i action delete hello && echo "Error invoking the web action" && tail -n 200 ~/tmp/openwhisk/invoker/logs/invoker-local_logs.log ~/tmp/openwhisk/controller/logs/controller-local_logs.log && exit 1)
 	$(WSK_CLI) -i api list /hello
 
 	echo "$$(tput setaf 1)deleting the function ...$$(tput sgr0)"
