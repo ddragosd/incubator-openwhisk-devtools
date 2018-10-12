@@ -423,3 +423,11 @@ $(addprefix start-provider-,$(PACKAGES)):
 $(addprefix stop-provider-,$(PACKAGES)): setup-providers
 	$(eval PACKAGE_NAME:= $(shell echo $(@) | cut -b 15-))
 	$(shell cat ~/tmp/openwhisk/providers.env) docker-compose -f docker-compose.yml -f docker-compose.packages.yml --project-name openwhisk stop $(PACKAGE_NAME)provider
+
+.PHONY: generate-whisk-properties
+generate-whisk-properties:
+	docker run --rm -v ~/tmp/openwhisk/src:/openwhisk -w /openwhisk/ansible \
+    		ddragosd/ansible:2.4.0.0-debian8  \
+    		sh -c "ansible-playbook properties.yml \
+    			-e db_host=db -e openwhisk_home=/openwhisk -e db_prefix=$(OPEN_WHISK_DB_PREFIX)"
+	val=$(OPENWHISK_PROJECT_HOME) && escaped="$${val//\//\\/}" && sed -i -e "s/\/openwhisk/$${escaped}/g" ~/tmp/openwhisk/src/whisk.properties
